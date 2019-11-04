@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+
+  </head>
+  
+  <body>
+    <script src="sketch.js"></script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-firestore.js"></script>
+
+    <script type="text/javascript">
+
+        var btnImgTwitterActive = false;
+
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyD4KpOJb_11VC9lpd3KoenWLrE_XtbzlgE",
+            authDomain: "techhciproject1.firebaseapp.com",
+            databaseURL: "https://techhciproject1.firebaseio.com",
+            projectId: "techhciproject1",
+            storageBucket: "techhciproject1.appspot.com",
+            messagingSenderId: "513254861531",
+            appId: "1:513254861531:web:552c9a14b58b17cce33afe"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        let baseUrl = 'http://localhost:3000/api/';
+        let provider = new firebase.auth.TwitterAuthProvider();
+
+        let accessToken = localStorage.getItem("accessToken");
+        let secret = localStorage.getItem("secret");
+
+        if (!accessToken || !secret) {
+        firebase.auth().signInWithPopup(provider).then(function(result){
+            let accessToken = result.credential.accessToken;
+            let secret = result.credential.secret;
+
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("secret", secret);
+
+            var user = result.user;
+            alert("Authenticated with twitter " + user.displayName);
+            authenticate();
+
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }else {
+        authenticate();
+    }
+
+                function httpGets(url) {
+
+                    let xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", url, false);
+                    xmlHttp.send(null);
+
+                    fetch(url)
+                    .then(function(response){
+                        return response.json();
+                    })
+                    .then(function(jsonResponse){
+                         var divTweet = document.getElementById("myTweets");
+                         if (divTweet.style.display === "none") {
+                             divTweet.style.display = "inline"
+
+                             var usersTweet = jsonResponse.data;
+
+                             var ulength = jsonResponse.data.length;
+
+                             for (var i = 0 ; i < ulength; i++) {
+                                var paraTemp = document.createElement("P");
+                                paraTemp.innerHTML = '<image src="' +usersTweet[i].user.profile_image_url_https + '"> ' + '<b>@</b>' + usersTweet[i].user.screen_name
+                                + '</br>' + usersTweet[i].created_at 
+                                + ' </br> <b> Tweet: </b> ' + usersTweet[i].text;
+                                divTweet.appendChild(paraTemp);                             }
+                    }
+                     else{
+                         divTweet.style.display = "none";
+                     }
+                    });
+
+                    return xmlHttp.responseText;
+        }
+
+        function authenticate() {
+            let url = baseUrl + `authenticate?access_token=${accessToken}&access_token_secret=${secret}`;
+            let authRet = httpGets(url);
+            if (authRet === "ok"){
+                alert("Logged in to node.js successfully!");
+            }else{
+                alert("Could not log in!");
+            }
+        }
+                function loadTweets() {
+            let url = baseUrl + 'home';
+            httpGets(url);
+
+            if (btnImgTwitterActive) {
+                btnImgTwitterActive = !btnImgTwitterActive;
+                document.getElementById("btnImgTwitter").src="data/twitterActive.png";
+            }
+            else{
+                btnImgTwitterActive = !btnImgTwitterActive;
+                document.getElementById("btnImgTwitter").src="data/twitterNotActive.png";
+            }
+        }
+
+    </script>
+
+    <img id="btnImgTwitter" onclick="loadTweets()" src="data/twitterNotActive.png" height="70px" width="70px">
+
+<div id="myTweets"></div>
+
+  </body>
+  
+</html>

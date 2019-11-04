@@ -1,0 +1,25 @@
+{
+  "name": "hciproject1",
+  "version": "1.0.0",
+  "description": "HCI project 1 ",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "hci",
+    "project",
+    "1",
+    "p5.js",
+    "node"
+  ],
+  "author": "Jose Luis Garcia",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "googleapis": "^39.2.0",
+    "twit": "^2.2.11"
+  }
+}

@@ -1,0 +1,22 @@
+#myTweets {
+    position: absolute;
+    top: 75px;
+    left: 125px;
+    padding: 3px;
+    max-width: 370px;
+    max-height: 132px;
+    overflow-y: scroll;
+    display: none;
+    background: radial-gradient(transparent, grey);
+}
+
+#myButtoneTweets.p{
+	border: solid, 5px;
+}
+
+#btnImgTwitter{
+	position: absolute;
+	top: 350px;
+	left: 550px;
+	padding: 5px;
+}
